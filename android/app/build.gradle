@@ -1,0 +1,52 @@
+plugins {
+    id "com.android.application"
+    // START: FlutterFire Configuration
+    id 'com.google.gms.google-services'
+    // END: FlutterFire Configuration
+    id "kotlin-android"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+android {
+    namespace = "com.example.we_chat"
+    compileSdk = 34  // Explicitly set to 33 instead of flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+
+    defaultConfig {
+        applicationId = "com.example.we_chat"
+        minSdk = 23
+        targetSdk = 34  // Explicitly set to 33
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+    }
+
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.debug
+        }
+    }
+
+    // Add this to handle the lifecycle plugin issue
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+}
+
+flutter {
+    source = "../.."
+}
+
+dependencies {
+    // Add this if you're using Firebase
+    implementation platform('com.google.firebase:firebase-bom:32.2.0')
+}
