@@ -58,24 +58,6 @@
 To use the **Gemini AI Chatbot** feature, you need to provide your own API key.  
 Create an API key by visiting [Google AI Studio](https://aistudio.google.com/app/apikey).
 
----
-
-## 🎥 YouTube Course:
-
-Check out the **YouTube Course** here:  
-[Watch the YouTube Playlist](https://youtube.com/playlist?list=PL8kbUJtS6hyal7Uw7wTeYmv7yiNPH5kOq)
-
-**Note:** This project contains more features and optimizations than the one demonstrated in the YouTube course.
-
----
-
-## 💬 Feedback and Suggestions:
-
-I’d love to hear your feedback or suggestions! Feel free to reach out via email:  
-📧 [rajpurohitharsh2020@gmail.com](mailto:rajpurohitharsh2020@gmail.com)
-
----
-
 ## 🏷️ Keywords
 
 - **Flutter Chat App**
