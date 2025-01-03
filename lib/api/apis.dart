@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart';
+import 'package:we_chat/sevices/CloudinaryService.dart';
 
 import '../models/chat_user.dart';
 import '../models/message.dart';
@@ -77,7 +78,7 @@ class APIs {
       };
 
       // Firebase Project > Project Settings > General Tab > Project ID
-      const projectID = 'we-chat-75f13';
+      const projectID = 'we-chat-14c0f';
 
       // get firebase admin token
       final bearerToken = await NotificationAccessToken.getToken;
@@ -318,27 +319,51 @@ class APIs {
   }
 
   //send chat image
+  // static Future<void> sendChatImage(ChatUser chatUser, File file) async {
+  //   //getting image file extension
+  //   final ext = file.path.split('.').last;
+  //
+  //   //storage file ref with path
+  //   final ref = storage.ref().child(
+  //       'images/${getConversationID(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext');
+  //
+  //   //uploading image
+  //   await ref
+  //       .putFile(file, SettableMetadata(contentType: 'image/$ext'))
+  //       .then((p0) {
+  //     log('Data Transferred: ${p0.bytesTransferred / 1000} kb');
+  //   });
+  //
+  //   //updating image in firestore database
+  //   final imageUrl = await ref.getDownloadURL();
+  //   await sendMessage(chatUser, imageUrl, Type.image);
+  // }
+
   static Future<void> sendChatImage(ChatUser chatUser, File file) async {
-    //getting image file extension
-    final ext = file.path.split('.').last;
+    try {
+      // Upload to Cloudinary instead of Firebase Storage
+      final imageUrl = await CloudinaryService.uploadImage(file);
 
-    //storage file ref with path
-    final ref = storage.ref().child(
-        'images/${getConversationID(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext');
+      // Send message with Cloudinary URL
+      await sendMessage(chatUser, imageUrl, Type.image);
 
-    //uploading image
-    await ref
-        .putFile(file, SettableMetadata(contentType: 'image/$ext'))
-        .then((p0) {
-      log('Data Transferred: ${p0.bytesTransferred / 1000} kb');
-    });
-
-    //updating image in firestore database
-    final imageUrl = await ref.getDownloadURL();
-    await sendMessage(chatUser, imageUrl, Type.image);
+    } catch (e) {
+      print('Error sending chat image: $e');
+      throw Exception('Failed to send image');
+    }
   }
 
   //delete message
+  // static Future<void> deleteMessage(Message message) async {
+  //   await firestore
+  //       .collection('chats/${getConversationID(message.toId)}/messages/')
+  //       .doc(message.sent)
+  //       .delete();
+  //
+  //   if (message.type == Type.image) {
+  //     await storage.refFromURL(message.msg).delete();
+  //   }
+  // }
   static Future<void> deleteMessage(Message message) async {
     await firestore
         .collection('chats/${getConversationID(message.toId)}/messages/')
@@ -346,7 +371,8 @@ class APIs {
         .delete();
 
     if (message.type == Type.image) {
-      await storage.refFromURL(message.msg).delete();
+      // Delete from Cloudinary instead of Firebase Storage
+      await CloudinaryService.deleteImage(message.msg);
     }
   }
 
